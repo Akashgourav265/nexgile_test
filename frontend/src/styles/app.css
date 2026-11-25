@@ -1,5 +1,6 @@
 /* ==========================================================================
-   Design tokens. Light theme only.
+   Design tokens. Light is the default; dark is selected (its own steps), not
+   an automatic inversion. data-theme on <html> overrides the OS setting.
    Chart colours follow a validated categorical palette (CVD-checked).
    ========================================================================== */
 
@@ -70,9 +71,113 @@
   --shadow-pop: 0 8px 28px rgba(11, 11, 11, 0.14), 0 1px 3px rgba(11, 11, 11, 0.08);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #0d0d0d;
+    --surface: #161615;
+    --surface-2: #1a1a19;
+    --sunken: #222220;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --text: #f0efec;
+    --text-2: #c3c2b7;
+    --text-3: #9d9c94;
+    --accent: #3987e5;
+    --accent-strong: #86b6ef;
+    --accent-soft: rgba(57, 135, 229, 0.15);
+    --sidebar: #11141a;
+    --sidebar-border: #1f2530;
+    --nav-hover: rgba(57, 135, 229, 0.1);
+    --nav-active: rgba(57, 135, 229, 0.2);
+    --viz-surface: #1a1a19;
+    --viz-grid: #2c2c2a;
+    --viz-axis: #45453f;
+    --viz-band: rgba(57, 135, 229, 0.1);
+    --viz-pos: #3987e5;
+    --viz-neg: #e66767;
+    --viz-neutral: #7d7c75;
+    --viz-total: #c3c2b7;
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --s4: #c98500;
+    --good-text: #3fc23f;
+    --good-soft: rgba(12, 163, 12, 0.14);
+    --warning-text: #f6c55a;
+    --warning-soft: rgba(250, 178, 25, 0.13);
+    --critical-text: #f08080;
+    --critical-soft: rgba(208, 59, 59, 0.16);
+    --neutral-soft: #262624;
+    --mock-bg: #2a2208;
+    --mock-border: #5c4710;
+    --mock-text: #f3d27a;
+    --ramp-0: #12345e;
+    --ramp-1: #184f95;
+    --ramp-2: #1c5cab;
+    --ramp-3: #256abf;
+    --ramp-4: #3987e5;
+    --ramp-5: #6da7ec;
+    --ramp-6: #9ec5f4;
+    --ramp-ink-light: #ffffff;
+    --ramp-ink-dark: #0b0b0b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-pop: 0 10px 30px rgba(0, 0, 0, 0.55);
+  }
+}
 
-
-
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0d0d0d;
+  --surface: #161615;
+  --surface-2: #1a1a19;
+  --sunken: #222220;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --text: #f0efec;
+  --text-2: #c3c2b7;
+  --text-3: #9d9c94;
+  --accent: #3987e5;
+  --accent-strong: #86b6ef;
+  --accent-soft: rgba(57, 135, 229, 0.15);
+  --sidebar: #11141a;
+  --sidebar-border: #1f2530;
+  --nav-hover: rgba(57, 135, 229, 0.1);
+  --nav-active: rgba(57, 135, 229, 0.2);
+  --viz-surface: #1a1a19;
+  --viz-grid: #2c2c2a;
+  --viz-axis: #45453f;
+  --viz-band: rgba(57, 135, 229, 0.1);
+  --viz-pos: #3987e5;
+  --viz-neg: #e66767;
+  --viz-neutral: #7d7c75;
+  --viz-total: #c3c2b7;
+  --s1: #3987e5;
+  --s2: #d95926;
+  --s3: #199e70;
+  --s4: #c98500;
+  --good-text: #3fc23f;
+  --good-soft: rgba(12, 163, 12, 0.14);
+  --warning-text: #f6c55a;
+  --warning-soft: rgba(250, 178, 25, 0.13);
+  --critical-text: #f08080;
+  --critical-soft: rgba(208, 59, 59, 0.16);
+  --neutral-soft: #262624;
+  --mock-bg: #2a2208;
+  --mock-border: #5c4710;
+  --mock-text: #f3d27a;
+  --ramp-0: #12345e;
+  --ramp-1: #184f95;
+  --ramp-2: #1c5cab;
+  --ramp-3: #256abf;
+  --ramp-4: #3987e5;
+  --ramp-5: #6da7ec;
+  --ramp-6: #9ec5f4;
+  --ramp-ink-light: #ffffff;
+  --ramp-ink-dark: #0b0b0b;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-pop: 0 10px 30px rgba(0, 0, 0, 0.55);
+}
 
 /* ---------- base ---------- */
 *,
@@ -950,9 +1055,22 @@ code {
 .heat-4 { background: var(--ramp-4); color: var(--ramp-ink-dark); }
 .heat-5 { background: var(--ramp-5); color: var(--ramp-ink-dark); }
 .heat-6 { background: var(--ramp-6); color: var(--ramp-ink-dark); }
-
-
-
+:root[data-theme='dark'] .heat-0,
+:root[data-theme='dark'] .heat-1,
+:root[data-theme='dark'] .heat-2,
+:root[data-theme='dark'] .heat-3 { color: #ffffff; }
+:root[data-theme='dark'] .heat-4,
+:root[data-theme='dark'] .heat-5,
+:root[data-theme='dark'] .heat-6 { color: #0b0b0b; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .heat-0,
+  :root:not([data-theme='light']) .heat-1,
+  :root:not([data-theme='light']) .heat-2,
+  :root:not([data-theme='light']) .heat-3 { color: #ffffff; }
+  :root:not([data-theme='light']) .heat-4,
+  :root:not([data-theme='light']) .heat-5,
+  :root:not([data-theme='light']) .heat-6 { color: #0b0b0b; }
+}
 .heatmap td.immature,
 .heat-immature-key {
   background: repeating-linear-gradient(45deg, var(--border-strong) 0 1.5px, transparent 1.5px 6px), var(--surface-2);

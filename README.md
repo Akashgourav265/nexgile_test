@@ -114,7 +114,7 @@ var/app.db              generated, git-ignored
 
 Every chart has a title with units and period, a legend for 2+ series, hover/keyboard tooltips, a
 **Table** toggle (no value is only reachable by hovering) and an **Explain** button that asks the analyst
-about that chart. Light theme only.
+about that chart. Light and dark themes (toggle in the top bar; follows the OS by default).
 
 ## API
 
