@@ -21,7 +21,7 @@ function ReferralsView({ d, meta }: { d: Referrals; meta: Meta }) {
   ]
   const tile = (id: string, label?: string) => {
     const x = m[id]
-    return x ? <KpiTile key={id} label={label ?? x.label} value={fmt(x.value, x.unit)} sub={x.note?.replace(/^MOCK\.?\s*/, '') || undefined} /> : null
+    return x ? <KpiTile key={id} label={label ?? x.label} value={fmt(x.value, x.unit)} sub={x.note?.replace(/^Synthetic demo\.?\s*/, '') || undefined} /> : null
   }
 
   return (

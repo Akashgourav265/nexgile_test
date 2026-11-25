@@ -98,11 +98,11 @@ def overview(conn: sqlite3.Connection, query: Query) -> dict:
     mismatches = rows(conn, "SELECT label FROM metric_reconciliation WHERE status = 'mismatch'")
     caveats = []
     if meta(conn)["is_mock"]:
-        caveats.append("All figures are mock development data. No assignment finding is shown.")
+        caveats.append("All figures are synthetic demo data (generated). No assignment finding is shown.")
     for k in ("retention30_q3_independent",):
         note = (kpis.get(k) or {}).get("note")
         if note and "mature" in note:
-            caveats.append(note.replace("MOCK value. ", ""))
+            caveats.append(note.replace("Synthetic demo value. ", ""))
     if mismatches:
         caveats.append("Dashboard and independent figures disagree for: "
                        + ", ".join(m["label"] for m in mismatches) + ".")

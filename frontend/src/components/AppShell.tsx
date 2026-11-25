@@ -152,7 +152,7 @@ export function AppShell({
           <div className="mock-banner" role="note">
             <Icon name="alert" size={16} />
             <span>
-              <strong>Development build.</strong> Every figure in this app is synthetic mock data. Nothing here is a
+              <strong>Development build.</strong> Every figure in this app is synthetic demo data (generated). Nothing here is a
               finding from the assignment.
             </span>
           </div>

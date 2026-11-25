@@ -29,3 +29,7 @@ Editable in the app (Deliverables → Decisions); saved to this file.
 - **What changed:** "Generate report" must now write a real REPORT.md even before analysis.
 - **Now doing:** Before analysis, generation writes a REPORT.md headed DEMO with no findings; all five sections say "not available".
 - **Not done:** The instruction mentioned an "Upload tab we agreed on". No such tab exists and none was agreed, so none was built.
+
+## D6 — Wording: "mock" replaced by "synthetic demo" (2026-11-25)
+- **Update:** Remove the word "mock" from the user-facing app and the demo report, keeping clear Synthetic/Demo labels.
+- **Now doing:** Labels read "Synthetic demo data" and "Demo ·". Internal identifiers (`--source mock`, `is_mock`) and earlier entries in this log are unchanged, as a record of what was said at the time. No values changed.

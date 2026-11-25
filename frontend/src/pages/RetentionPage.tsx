@@ -39,7 +39,7 @@ function RetentionView({ d, meta, setSegment }: { d: Retention; meta: Meta; setS
     rows: d.acquisition,
   })
   const cohortRows = d.cohorts.flatMap((c: Cohort) => d.days.map((day) => ({ cohort: c.cohort_month, day, size: c.cohort_size, rate: c.rates[String(day)] })))
-  const retentionNote = d.kpis.retention30_q3_independent?.note?.replace(/^MOCK value\.\s*/, '')
+  const retentionNote = d.kpis.retention30_q3_independent?.note?.replace(/^Synthetic demo value\.\s*/, '')
 
   return (
     <>

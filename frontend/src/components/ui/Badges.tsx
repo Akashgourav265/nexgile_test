@@ -6,7 +6,7 @@ import { Icon, type IconName } from './Icon'
 export function SourceBadge({ isMock }: { isMock: boolean }) {
   return isMock ? (
     <span className="badge badge-mock" title="Synthetic development data. Not findings from the assignment.">
-      <Icon name="alert" size={13} /> Mock data
+      <Icon name="alert" size={13} /> Synthetic demo data
     </span>
   ) : (
     <span className="badge badge-good">
@@ -32,7 +32,7 @@ export function RecommendationBadge({ value }: { value: Recommendation }) {
 }
 
 export function ConfidenceBadge({ value, isMock }: { value: Confidence | null; isMock?: boolean }) {
-  if (isMock) return <span className="badge badge-outline" title="Confidence is not meaningful for mock data">Mock</span>
+  if (isMock) return <span className="badge badge-outline" title="Confidence is not meaningful for synthetic demo data">Demo</span>
   if (!value) return <span className="badge badge-outline">Not assessed</span>
   const filled = { high: 3, medium: 2, low: 1 }[value]
   return (

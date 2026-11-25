@@ -83,7 +83,7 @@ def _insert(conn: sqlite3.Connection, table: str, rows: list[dict]) -> None:
 def _metadata(conn: sqlite3.Connection, seed: int) -> None:
     meta = {
         "data_source": "mock",
-        "data_label": "MOCK DEVELOPMENT DATA - synthetic values, not findings from the assignment",
+        "data_label": "SYNTHETIC DEMO DATA - generated values, not findings from the assignment",
         "generated_by": "pipeline.providers.mock",
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "seed": str(seed),
@@ -97,14 +97,14 @@ def _metadata(conn: sqlite3.Connection, seed: int) -> None:
 
 
 def _evidence(conn: sqlite3.Connection) -> None:
-    note = "MOCK - synthetic placeholder. No analysis of assignment data was performed."
+    note = "Synthetic demo placeholder. No analysis of assignment data was performed."
     rows = [
-        ("MOCK-REV", "Mock revenue series", "revenue_monthly"),
-        ("MOCK-BRIDGE", "Mock bridge drivers", "bridge_item"),
-        ("MOCK-EXP", "Mock experiment outcomes", "experiment_arm, experiment_metric"),
-        ("MOCK-PRICE", "Mock pricing series", "pricing_monthly, price_point"),
-        ("MOCK-REF", "Mock referral funnel", "referral_funnel, initiative_metric"),
-        ("MOCK-RET", "Mock retention cohorts", "retention_cohort, acquisition_weekly"),
+        ("DEMO-REV", "Demo revenue series", "revenue_monthly"),
+        ("DEMO-BRIDGE", "Demo bridge drivers", "bridge_item"),
+        ("DEMO-EXP", "Demo experiment outcomes", "experiment_arm, experiment_metric"),
+        ("DEMO-PRICE", "Demo pricing series", "pricing_monthly, price_point"),
+        ("DEMO-REF", "Demo referral funnel", "referral_funnel, initiative_metric"),
+        ("DEMO-RET", "Demo retention cohorts", "retention_cohort, acquisition_weekly"),
     ]
     _insert(conn, "evidence", [
         {"evidence_id": eid, "title": title, "detail": note,
@@ -209,16 +209,16 @@ def _kpis(rng, conn, revenue, acquisition, retention) -> float:
     change = round((revenue["q3"] / revenue["q2"] - 1) * 100, 2)
     signup_growth = round((acquisition["q3"] / acquisition["q2"] - 1) * 100, 2)
     rq2, rq3 = retention["q2"], retention["q3"]
-    mock = "MOCK value."
+    mock = "Synthetic demo value."
     rows = [
-        ("revenue_q2", "Q2 revenue", round(revenue["q2"], 2), "currency", "Q2", "independent", mock, "MOCK-REV"),
-        ("revenue_q3", "Q3 revenue", round(revenue["q3"], 2), "currency", "Q3", "independent", mock, "MOCK-REV"),
-        ("revenue_change_pct", "Revenue change, Q3 vs Q2", change, "pct", "Q3 vs Q2", "independent", mock, "MOCK-REV"),
+        ("revenue_q2", "Q2 revenue", round(revenue["q2"], 2), "currency", "Q2", "independent", mock, "DEMO-REV"),
+        ("revenue_q3", "Q3 revenue", round(revenue["q3"], 2), "currency", "Q3", "independent", mock, "DEMO-REV"),
+        ("revenue_change_pct", "Revenue change, Q3 vs Q2", change, "pct", "Q3 vs Q2", "independent", mock, "DEMO-REV"),
         ("revenue_change_pct_reported", "Revenue change (dashboard)",
          round(change + rng.uniform(-1.5, 1.5), 2), "pct", "Q3 vs Q2", "reported", mock, None),
-        ("signups_q2", "Q2 sign-ups", acquisition["q2"], "count", "Q2", "independent", mock, "MOCK-RET"),
-        ("signups_q3", "Q3 sign-ups", acquisition["q3"], "count", "Q3", "independent", mock, "MOCK-RET"),
-        ("signup_growth_pct", "Sign-up growth, Q3 vs Q2", signup_growth, "pct", "Q3 vs Q2", "independent", mock, "MOCK-RET"),
+        ("signups_q2", "Q2 sign-ups", acquisition["q2"], "count", "Q2", "independent", mock, "DEMO-RET"),
+        ("signups_q3", "Q3 sign-ups", acquisition["q3"], "count", "Q3", "independent", mock, "DEMO-RET"),
+        ("signup_growth_pct", "Sign-up growth, Q3 vs Q2", signup_growth, "pct", "Q3 vs Q2", "independent", mock, "DEMO-RET"),
         ("signup_growth_pct_reported", "Sign-up growth (dashboard)",
          round(signup_growth + rng.uniform(-3, 3), 2), "pct", "Q3 vs Q2", "reported", mock, None),
         ("retention30_q2_reported", "30-day retention, Q2 (dashboard)",
@@ -226,12 +226,12 @@ def _kpis(rng, conn, revenue, acquisition, retention) -> float:
         ("retention30_q3_reported", "30-day retention, Q3 (dashboard)",
          round(rq3 + rng.uniform(-0.05, 0.08), 4) if rq3 is not None else None, "rate", "Q3", "reported", mock, None),
         ("retention30_q2_independent", "30-day retention, Q2 (recomputed)",
-         round(rq2, 4) if rq2 is not None else None, "rate", "Q2", "independent", mock, "MOCK-RET"),
+         round(rq2, 4) if rq2 is not None else None, "rate", "Q2", "independent", mock, "DEMO-RET"),
         ("retention30_q3_independent", "30-day retention, Q3 (recomputed)",
          round(rq3, 4) if rq3 is not None else None, "rate", "Q3", "independent",
-         f"MOCK value. Only {retention['q3_mature_cohorts']} of 3 Q3 cohorts are mature at day 30.", "MOCK-RET"),
+         f"Synthetic demo value. Only {retention['q3_mature_cohorts']} of 3 Q3 cohorts are mature at day 30.", "DEMO-RET"),
         ("paying_customers_end", "Paying customers, end of Q3", revenue["customers_end"], "count",
-         "Sep", "independent", mock, "MOCK-REV"),
+         "Sep", "independent", mock, "DEMO-REV"),
     ]
     _insert(conn, "kpi", [
         dict(zip(("kpi_id", "label", "value", "unit", "period", "basis", "note", "evidence_id"), r)) for r in rows
@@ -241,10 +241,10 @@ def _kpis(rng, conn, revenue, acquisition, retention) -> float:
 
 def _bridge(rng: random.Random, conn: sqlite3.Connection, total: float) -> None:
     causes = [
-        "Mock · Paying-customer volume",
-        "Mock · Price and plan mix",
-        "Mock · Churn",
-        "Mock · Payment failures and refunds",
+        "Demo · Paying-customer volume",
+        "Demo · Price and plan mix",
+        "Demo · Churn",
+        "Demo · Payment failures and refunds",
     ]
     shares = [rng.uniform(0.15, 0.45) for _ in range(3)] + [-rng.uniform(0.05, 0.2)]
     explained_share = rng.uniform(0.75, 0.9)
@@ -258,20 +258,20 @@ def _bridge(rng: random.Random, conn: sqlite3.Connection, total: float) -> None:
         rows.append({"position": i, "cause": cause, "kind": "driver", "central_pp": central,
                      "low_pp": round(central - hw, 2), "high_pp": round(central + hw, 2),
                      "confidence": rng.choice(["high", "medium", "low"]),
-                     "method": "MOCK - random allocation for layout testing", "evidence_id": "MOCK-BRIDGE"})
+                     "method": "Demo only - random allocation for layout testing", "evidence_id": "DEMO-BRIDGE"})
     # The remainder is computed, never chosen, so the bars always reconcile.
     remainder = round(total - sum(r["central_pp"] for r in rows), 2)
     hw = round(sum(half_widths) / 2, 2)
     rows.append({"position": len(rows) + 1, "cause": "Unexplained remainder", "kind": "unexplained",
                  "central_pp": remainder, "low_pp": round(remainder - hw, 2), "high_pp": round(remainder + hw, 2),
                  "confidence": "low", "method": "Total change minus the sum of explained drivers",
-                 "evidence_id": "MOCK-BRIDGE"})
+                 "evidence_id": "DEMO-BRIDGE"})
     _insert(conn, "bridge_item", rows)
 
 
 def _initiatives(conn: sqlite3.Connection) -> None:
     pending = "The assignment data has not been analysed yet."
-    rationale = ("No verdict is shown in development mode. Figures on this page are mock values "
+    rationale = ("No verdict is shown in development mode. Figures on this page are synthetic demo values "
                  "that only exercise the layout.")
     monitoring = "Monitoring plan will be defined together with the recommendation."
     rows = [
@@ -293,7 +293,7 @@ def _initiatives(conn: sqlite3.Connection) -> None:
 def _experiment(rng: random.Random, conn: sqlite3.Connection) -> None:
     n = {"control": int(rng.gauss(2000, 35)), "treatment": int(rng.gauss(2000, 35))}
     _insert(conn, "experiment_arm", [
-        {"arm": arm, "assigned": n[arm], "countries": "Mock country A, Mock country B",
+        {"arm": arm, "assigned": n[arm], "countries": "Demo country A, Demo country B",
          "start_date": f"{YEAR}-06-01", "end_date": f"{YEAR}-07-15"}
         for arm in ("control", "treatment")
     ])
@@ -337,7 +337,7 @@ def _exp_row(mid, pos, label, unit, r, n) -> dict:
             "control_value": round(r["control"], 6), "treatment_value": round(r["treatment"], 6),
             "effect": round(r["effect"], 6), "ci_low": round(r["ci_low"], 6), "ci_high": round(r["ci_high"], 6),
             "p_value": round(r["p_value"], 6), "control_n": n["control"], "treatment_n": n["treatment"],
-            "note": "MOCK - simulated outcomes, intention-to-treat"}
+            "note": "Synthetic demo - simulated outcomes, intention-to-treat"}
 
 
 def _pricing(rng: random.Random, conn: sqlite3.Connection) -> None:
@@ -378,20 +378,20 @@ def _pricing(rng: random.Random, conn: sqlite3.Connection) -> None:
     pre, post = ["2026-07", "2026-08"], ["2026-09"]
     e_pre, e_post = avg("Europe", "arppu", pre), avg("Europe", "arppu", post)
     c_pre, c_post = avg("Comparison", "arppu", pre), avg("Comparison", "arppu", post)
-    no_ci = "MOCK. No uncertainty estimate: a single post-change month cannot support one."
+    no_ci = "Synthetic demo. No uncertainty estimate: a single post-change month cannot support one."
     metrics = [
-        ("europe_arppu_pre", "Europe ARPPU, Jul-Aug", e_pre, None, None, "currency", "MOCK"),
-        ("europe_arppu_post", "Europe ARPPU, Sep", e_post, None, None, "currency", "MOCK"),
-        ("comparison_arppu_pre", "Comparison ARPPU, Jul-Aug", c_pre, None, None, "currency", "MOCK"),
-        ("comparison_arppu_post", "Comparison ARPPU, Sep", c_post, None, None, "currency", "MOCK"),
+        ("europe_arppu_pre", "Europe ARPPU, Jul-Aug", e_pre, None, None, "currency", "Synthetic demo"),
+        ("europe_arppu_post", "Europe ARPPU, Sep", e_post, None, None, "currency", "Synthetic demo"),
+        ("comparison_arppu_pre", "Comparison ARPPU, Jul-Aug", c_pre, None, None, "currency", "Synthetic demo"),
+        ("comparison_arppu_post", "Comparison ARPPU, Sep", c_post, None, None, "currency", "Synthetic demo"),
         ("did_arppu", "Difference-in-differences, ARPPU", (e_post - e_pre) - (c_post - c_pre), None, None,
          "currency", no_ci),
-        ("europe_churn_pre", "Europe churn, Jul-Aug", avg("Europe", "churn", pre), None, None, "rate", "MOCK"),
-        ("europe_churn_post", "Europe churn, Sep", avg("Europe", "churn", post), None, None, "rate", "MOCK"),
+        ("europe_churn_pre", "Europe churn, Jul-Aug", avg("Europe", "churn", pre), None, None, "rate", "Synthetic demo"),
+        ("europe_churn_post", "Europe churn, Sep", avg("Europe", "churn", post), None, None, "rate", "Synthetic demo"),
         ("europe_conversion_pre", "Europe paid conversion, Jul-Aug",
-         avg("Europe", "paid_conversion", pre), None, None, "rate", "MOCK"),
+         avg("Europe", "paid_conversion", pre), None, None, "rate", "Synthetic demo"),
         ("europe_conversion_post", "Europe paid conversion, Sep",
-         avg("Europe", "paid_conversion", post), None, None, "rate", "MOCK"),
+         avg("Europe", "paid_conversion", post), None, None, "rate", "Synthetic demo"),
     ]
     _insert(conn, "initiative_metric", [
         {"initiative_id": "pricing", "metric_id": mid, "position": i, "label": label,
@@ -416,7 +416,7 @@ def _referrals(rng: random.Random, conn: sqlite3.Connection) -> None:
         ("Still paying after 30 days", retained, "Mature cohorts only"),
     ]
     _insert(conn, "referral_funnel", [
-        {"position": i, "stage": s, "count": c, "note": f"MOCK. {note}" if note else "MOCK"}
+        {"position": i, "stage": s, "count": c, "note": f"Synthetic demo. {note}" if note else "Synthetic demo"}
         for i, (s, c, note) in enumerate(stages, start=1)
     ])
 
@@ -425,14 +425,14 @@ def _referrals(rng: random.Random, conn: sqlite3.Connection) -> None:
     paid_out = owed * rng.uniform(0.3, 0.7)
     revenue = paid * rng.uniform(25, 40) * rng.uniform(1.2, 2.0)
     metrics = [
-        ("payout_per_workspace", "Payout per referred workspace", payout_rate, "currency", "MOCK"),
-        ("payouts_owed", "Partner payouts owed", owed, "currency", "MOCK. Programme cost, not negative revenue"),
-        ("payouts_paid", "Partner payouts actually paid", paid_out, "currency", "MOCK"),
-        ("referred_revenue", "Revenue from referred workspaces (Q3)", revenue, "currency", "MOCK"),
+        ("payout_per_workspace", "Payout per referred workspace", payout_rate, "currency", "Synthetic demo"),
+        ("payouts_owed", "Partner payouts owed", owed, "currency", "Synthetic demo. Programme cost, not negative revenue"),
+        ("payouts_paid", "Partner payouts actually paid", paid_out, "currency", "Synthetic demo"),
+        ("referred_revenue", "Revenue from referred workspaces (Q3)", revenue, "currency", "Synthetic demo"),
         ("cost_per_paid", "Payout cost per paying referred customer", owed / paid if paid else None,
-         "currency", "MOCK"),
+         "currency", "Synthetic demo"),
         ("incremental_customers", "Incremental paying customers", None, "count",
-         "Not identifiable from mock data. Requires a comparison group."),
+         "Not identifiable from synthetic demo data. Requires a comparison group."),
     ]
     _insert(conn, "initiative_metric", [
         {"initiative_id": "referral", "metric_id": mid, "position": i, "label": label,
@@ -464,15 +464,15 @@ def _data_quality(rng, conn, total_change, acquisition, retention) -> None:
         status = rng.choices(["pass", "warn", "fail"], weights=[6, 3, 1.5])[0]
         observed = "matches expectation" if status == "pass" else f"{rng.uniform(0.1, 4):.1f}% of rows affected"
         rows.append({"check_id": cid, "category": cat, "label": label, "status": status,
-                     "observed": f"MOCK: {observed}", "expected": expected,
+                     "observed": f"Demo: {observed}", "expected": expected,
                      "detail": "Synthetic result. The real check runs once the assignment data is connected."})
     rows.append({
         "check_id": "exp_srm", "category": "experiment", "label": "Sample-ratio mismatch (50/50 split)",
         "status": "warn" if srm["p_value"] < 0.01 else "pass",
-        "observed": (f"MOCK: control {arms['control']:,}, treatment {arms['treatment']:,}; "
+        "observed": (f"Demo: control {arms['control']:,}, treatment {arms['treatment']:,}; "
                      f"chi-square {srm['chi2']:.2f}, p = {srm['p_value']:.3f}"),
         "expected": "p >= 0.01",
-        "detail": "Chi-square test of assigned counts against an even split (computed on mock counts).",
+        "detail": "Chi-square test of assigned counts against an even split (computed on synthetic demo counts).",
     })
     _insert(conn, "dq_check", rows)
 
@@ -495,7 +495,7 @@ def _data_quality(rng, conn, total_change, acquisition, retention) -> None:
             status = "match" if abs(dash - ind) <= tol else "mismatch"
         out.append({"metric_id": mid, "label": label, "unit": unit, "dashboard_value": dash,
                     "independent_value": ind, "status": status,
-                    "explanation": "MOCK values. The real reconciliation compares dashboards/ SQL with "
+                    "explanation": "Synthetic demo values. The real reconciliation compares dashboards/ SQL with "
                                    "an independent recomputation from raw files."})
     _insert(conn, "metric_reconciliation", out)
 
@@ -528,7 +528,7 @@ def _definitions(conn: sqlite3.Connection) -> None:
 
 
 def _chart_catalog(conn: sqlite3.Connection) -> None:
-    mock = "Currently shows MOCK data."
+    mock = "Currently shows synthetic demo data."
     rows = [
         ("overview_revenue_trend", "overview", "Monthly revenue by region",
          "Total revenue per calendar month, one line per region.",

@@ -21,7 +21,7 @@ function BridgeView({ d, meta }: { d: Bridge; meta: Meta }) {
       low: i.low_pp,
       high: i.high_pp,
       kind: i.kind,
-      confidence: meta.is_mock ? 'not applicable (mock)' : i.confidence,
+      confidence: meta.is_mock ? 'not applicable (synthetic demo)' : i.confidence,
       detail: i.evidence_detail ?? undefined,
     })),
     { label: 'Total change, Q3 vs Q2', value: d.total.value ?? 0, kind: 'total' as const },

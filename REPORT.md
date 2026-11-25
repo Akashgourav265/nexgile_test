@@ -1,6 +1,6 @@
 **Reproduce:** not available yet (the analysis pipeline has not been written).
 
-> **SYNTHETIC/DEMO REPORT - generated 2026-11-25 14:19 UTC from mock development data.** Every number is synthetic and is not a finding. The assignment analysis is not complete.
+> **SYNTHETIC/DEMO REPORT - generated 2026-11-25 14:22 UTC from synthetic demo data.** Every number is synthetic and is not a finding. The assignment analysis is not complete.
 
 ## 1. Memo to the CEO
 
@@ -12,10 +12,10 @@
 
 | Cause | Central (pp) | Low | High | Confidence |
 |---|---|---|---|---|
-| Mock · Paying-customer volume | +2.22 | +1.19 | +3.25 | n/a (demo) |
-| Mock · Price and plan mix | +1.90 | +1.33 | +2.47 | n/a (demo) |
-| Mock · Churn | +0.97 | +0.53 | +1.41 | n/a (demo) |
-| Mock · Payment failures and refunds | -1.00 | -1.41 | -0.59 | n/a (demo) |
+| Demo · Paying-customer volume | +2.22 | +1.19 | +3.25 | n/a (demo) |
+| Demo · Price and plan mix | +1.90 | +1.33 | +2.47 | n/a (demo) |
+| Demo · Churn | +0.97 | +0.53 | +1.41 | n/a (demo) |
+| Demo · Payment failures and refunds | -1.00 | -1.41 | -0.59 | n/a (demo) |
 | Unexplained remainder | +0.76 | -0.47 | +1.99 | n/a (demo) |
 | **Total** | **+4.85** | | | |
 

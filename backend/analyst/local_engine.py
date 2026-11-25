@@ -87,7 +87,7 @@ class Ctx:
 
     def confidence(self, level: str | None) -> str:
         if self.is_mock:
-            return "Not applicable: mock data"
+            return "Not applicable: synthetic demo data"
         return level or "not yet assessed"
 
 
@@ -268,7 +268,7 @@ def h_retention(c: Ctx, q: str) -> Answer:
         f"Recomputed: {c.k('retention30_q2_independent')} to {c.k('retention30_q3_independent')}.",
     ]
     if "mature" in note:
-        summary.append(note.replace("MOCK value. ", "") + " Young cohorts can make retention look better or worse "
+        summary.append(note.replace("Synthetic demo value. ", "") + " Young cohorts can make retention look better or worse "
                        "than it will end up.")
     return Answer("retention", "30-day retention", summary,
                   evidence=[ev("Q2 (dashboard)", c.k("retention30_q2_reported"), "kpi.retention30_q2_reported"),
@@ -519,7 +519,7 @@ def answer(conn: sqlite3.Connection, question: str) -> dict:
     result = intent.handler(c, question.lower()) if intent else _cannot(c, question)
     out = asdict(result)
     out["data_source"] = c.meta.get("data_source")
-    out["notices"] = (["These figures are MOCK development data, not findings from the assignment."]
+    out["notices"] = (["These figures are synthetic demo data (generated), not findings from the assignment."]
                       if c.is_mock else [])
     return out
 

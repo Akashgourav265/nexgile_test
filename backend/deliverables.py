@@ -52,8 +52,8 @@ def report_status(conn: sqlite3.Connection) -> dict:
         "analysis_complete": complete,
         "data_source": md.get("data_source"),
         "message": None if complete else (
-            "Analysis not ready: the app is on mock data and the synthetic dataset has not been analysed. "
-            "Generating now produces a clearly labelled DEMO report with no findings."),
+            "Analysis not ready: the app shows synthetic demo data and the synthetic dataset has not been analysed. "
+            "Generating now produces a clearly labelled SYNTHETIC/DEMO report with no findings."),
         "content": text,
     }
 
@@ -112,7 +112,7 @@ def generate_report(conn: sqlite3.Connection) -> dict:
 
     lines = ["**Reproduce:** not available yet (the analysis pipeline has not been written).", ""]
     if mock:
-        lines += [f"> **SYNTHETIC/DEMO REPORT - generated {now} from mock development data.** Every number is "
+        lines += [f"> **SYNTHETIC/DEMO REPORT - generated {now} from synthetic demo data.** Every number is "
                   "synthetic and is not a finding. The assignment analysis is not complete.", ""]
     lines += ["## 1. Memo to the CEO", "", *_section(memo), "",
               "## 2. Revenue bridge", "", *_section(bridge), "",

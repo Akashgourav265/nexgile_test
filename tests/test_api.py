@@ -85,7 +85,7 @@ class ApiTests(unittest.TestCase):
             self.assertEqual(body["mode"], "local")
             self.assertEqual(body["intent"], s["intent"], s["question"])
             self.assertTrue(body["answered"], s["question"])
-            self.assertIn("MOCK", " ".join(body["notices"]))
+            self.assertIn("synthetic demo", " ".join(body["notices"]))
 
     def test_analyst_refuses_unsupported_question(self):
         _, body = self.post("/api/analyst/ask", {"question": "What will the weather be tomorrow?"})
