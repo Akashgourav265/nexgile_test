@@ -33,3 +33,9 @@ Editable in the app (Deliverables → Decisions); saved to this file.
 ## D6 — Wording: "mock" replaced by "synthetic demo" (2026-11-25)
 - **Update:** Remove the word "mock" from the user-facing app and the demo report, keeping clear Synthetic/Demo labels.
 - **Now doing:** Labels read "Synthetic demo data" and "Demo ·". Internal identifiers (`--source mock`, `is_mock`) and earlier entries in this log are unchanged, as a record of what was said at the time. No values changed.
+
+## D7 — UNDERSTANDING.md approved; analysis started (2026-11-25)
+- **Update:** The user approved UNDERSTANDING.md and asked for the analysis, time-boxed to 2 minutes.
+- **What changed:** UNDERSTANDING.md is locked as of commit `3a0e557`; it will not be edited again.
+- **Now doing:** Plan step G.1 only. `python3 -m analysis.step1_revenue_definitions` independently reproduces the dashboard revenue change from the raw files (SYNTHETIC): -5.99% (shown as -6.0%). Removing 558 duplicate payment rows gives -6.01%; net of refunds, -6.30%. The duplicates do not change the headline.
+- **Not done yet:** steps G.2-G.8 (bridge with ranges, payment failures, onboarding ITT, price DiD, referrals, tickets, app/report update). No initiative verdict has been formed.
