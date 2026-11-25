@@ -58,33 +58,70 @@ def report_status(conn: sqlite3.Connection) -> dict:
     }
 
 
+NA = "_Not available yet._"
+
+
+def _section(build) -> list[str]:
+    """Render one report section; any missing data becomes 'Not available yet' instead of an error."""
+    try:
+        out = build()
+        return out if out else [NA]
+    except Exception:  # missing table/column/value: degrade, never fail the whole report
+        return [NA]
+
+
 def generate_report(conn: sqlite3.Connection) -> dict:
     md = metadata(conn)
-    if md.get("analysis_status") == "complete":
-        raise NotImplementedError("Final report rendering is written together with the analysis.")
-    k = {r["kpi_id"]: r for r in rows(conn, "SELECT kpi_id, label, value, unit FROM kpi")}
-    bridge = rows(conn, "SELECT cause, central_pp, low_pp, high_pp FROM bridge_item ORDER BY position")
-    inits = rows(conn, "SELECT name, recommendation FROM initiative")
+    mock = md.get("data_source") != "assignment" or md.get("analysis_status") != "complete"
+    cur = md.get("currency", "USD")
+    k = {r["kpi_id"]: r["value"] for r in rows(conn, "SELECT kpi_id, value FROM kpi")}
     now = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    not_ready = "_Not available: the analysis has not been run. No finding is stated here._"
-    lines = [
-        "**Reproduce:** `not available yet - the analysis pipeline has not been written`",
-        "",
-        "> **DEMO REPORT - NOT THE ASSIGNMENT REPORT.** Generated from MOCK development data on "
-        f"{now}. Every number below is synthetic/demo and is not a finding. The assignment analysis is not complete.",
-        "",
-        "## 1. Memo to the CEO", "", not_ready, "",
-        "## 2. Revenue bridge", "", not_ready, "",
-        "Demo layout only (mock values, not findings):", "",
-        "| Cause (MOCK) | Central pp | Low | High |", "|---|---|---|---|",
-        *[f"| {b['cause']} | {b['central_pp']:+.2f} | {b['low_pp']:+.2f} | {b['high_pp']:+.2f} |" for b in bridge],
-        f"| **Total (MOCK)** | **{k['revenue_change_pct']['value']:+.2f}** | | |", "",
-        "## 3. Evidence for each initiative", "",
-        *[f"- {i['name']}: recommendation **{i['recommendation']}** (no analysis yet)" for i in inits], "",
-        "## 4. What the agent got wrong", "", not_ready, "",
-        "## 5. Not done and not known", "",
-        "- The synthetic dataset (`python3 -m datagen.generate`) has been generated but not analysed.",
-        "- UNDERSTANDING.md is awaiting review; analysis starts only after that.", "",
-    ]
+    tag = "(SYNTHETIC/DEMO) " if mock else ""
+
+    def memo():
+        return [f"- {tag}Revenue changed {k['revenue_change_pct']:+.1f}% from Q2 ({cur} {k['revenue_q2']:,.0f}) "
+                f"to Q3 ({cur} {k['revenue_q3']:,.0f}).",
+                f"- {tag}Sign-ups changed {k['signup_growth_pct']:+.1f}%; recomputed 30-day retention "
+                f"{k['retention30_q2_independent']:.1%} -> {k['retention30_q3_independent']:.1%}.",
+                "- Recommendations: not available yet (no analysis has been run)."]
+
+    def bridge():
+        items = rows(conn, "SELECT cause, central_pp, low_pp, high_pp, confidence FROM bridge_item ORDER BY position")
+        return (["| Cause | Central (pp) | Low | High | Confidence |", "|---|---|---|---|---|"]
+                + [f"| {b['cause']} | {b['central_pp']:+.2f} | {b['low_pp']:+.2f} | {b['high_pp']:+.2f} | "
+                   f"{'n/a (demo)' if mock else b['confidence']} |" for b in items]
+                + [f"| **Total** | **{k['revenue_change_pct']:+.2f}** | | | |"])
+
+    def initiatives():
+        out = []
+        for i in rows(conn, "SELECT initiative_id, name, recommendation FROM initiative"):
+            out += [f"### {i['name']}", f"- Recommendation: **{i['recommendation']}**"]
+            if i["initiative_id"] == "onboarding":
+                out += [f"- {tag}{m['label']}: effect {m['effect'] * (100 if m['unit'] == 'rate' else 1):+.2f}"
+                        f"{' pp' if m['unit'] == 'rate' else ''} (95% CI {m['ci_low'] * (100 if m['unit'] == 'rate' else 1):+.2f}"
+                        f" to {m['ci_high'] * (100 if m['unit'] == 'rate' else 1):+.2f})"
+                        for m in rows(conn, "SELECT * FROM experiment_metric ORDER BY position")]
+            elif i["initiative_id"] == "referral":
+                out += [f"- {tag}{f['stage']}: {f['count']:,}"
+                        for f in rows(conn, "SELECT stage, count FROM referral_funnel ORDER BY position")]
+            out += [f"- {tag}{m['label']}: " + ("not available yet" if m["value"] is None else f"{m['value']:,.4g}")
+                    for m in rows(conn, "SELECT label, value FROM initiative_metric WHERE initiative_id = ? "
+                                        "ORDER BY position", (i["initiative_id"],))]
+            out.append("")
+        return out
+
+    lines = ["**Reproduce:** not available yet (the analysis pipeline has not been written).", ""]
+    if mock:
+        lines += [f"> **SYNTHETIC/DEMO REPORT - generated {now} from mock development data.** Every number is "
+                  "synthetic and is not a finding. The assignment analysis is not complete.", ""]
+    lines += ["## 1. Memo to the CEO", "", *_section(memo), "",
+              "## 2. Revenue bridge", "", *_section(bridge), "",
+              "## 3. Evidence for each initiative", "", *_section(initiatives), "",
+              "## 4. What the agent got wrong", "", NA, "",
+              "## 5. Not done and not known", "",
+              "- Not available yet: the synthetic dataset (data/) has been generated but not analysed.",
+              "- UNDERSTANDING.md is a draft awaiting review.", ""]
     _write(REPORT, "\n".join(lines))
-    return report_status(conn)
+    status = report_status(conn)
+    status.update(saved=True, bytes=REPORT.stat().st_size, generated_at=now)
+    return status

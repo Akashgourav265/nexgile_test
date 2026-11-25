@@ -13,6 +13,7 @@ interface ReportDoc {
   analysis_complete: boolean
   message: string | null
   content: string
+  bytes?: number
 }
 
 const post = <T,>(path: string, body: unknown) =>
@@ -63,16 +64,21 @@ export function DecisionsPage() {
 export function ReportPage() {
   const [doc, setDoc] = useState<ReportDoc | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [saved, setSaved] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   useEffect(() => {
     request<ReportDoc>('/api/deliverables/report').then(setDoc).catch((e: ApiError) => setError(e.message))
   }, [])
   const generate = async () => {
     setBusy(true)
+    setError(null)
+    setSaved(null)
     try {
-      setDoc(await post<ReportDoc>('/api/deliverables/report/generate', {}))
+      const d = await post<ReportDoc>('/api/deliverables/report/generate', {})
+      setDoc(d)
+      setSaved(`Saved REPORT.md (${(d.bytes ?? 0).toLocaleString()} bytes) to ${d.path}`)
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Generation failed')
+      setError(`Report not saved: ${e instanceof ApiError ? e.message : 'generation failed'}`)
     } finally {
       setBusy(false)
     }
@@ -81,13 +87,14 @@ export function ReportPage() {
     <>
       <PageHeader eyebrow="Deliverables" title="Report" description="Preview and generate REPORT.md at the repository root." />
       {doc && !doc.analysis_complete && <Note tone="warning">{doc.message}</Note>}
+      {saved && <Note>✓ {saved}</Note>}
       {error && <Note tone="warning">{error}</Note>}
       <Card
         title="REPORT.md"
         subtitle={doc?.path}
         actions={
           <button type="button" className="btn btn-primary" onClick={() => void generate()} disabled={!doc || busy}>
-            <Icon name="refresh" size={15} /> {doc?.analysis_complete ? 'Generate report' : 'Generate demo report'}
+            <Icon name="refresh" size={15} /> {busy ? 'Generating…' : 'Generate report'}
           </button>
         }
       >
