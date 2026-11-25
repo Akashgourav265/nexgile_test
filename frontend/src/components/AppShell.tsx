@@ -38,34 +38,6 @@ export const NAV: { group: string; items: { page: string; label: string; icon: I
   },
 ]
 
-type Theme = 'system' | 'light' | 'dark'
-const THEME_KEY = 'revenue-review-theme'
-
-function readTheme(): Theme {
-  try {
-    const t = localStorage.getItem(THEME_KEY)
-    return t === 'light' || t === 'dark' ? t : 'system'
-  } catch {
-    return 'system'
-  }
-}
-
-function useTheme() {
-  const [theme, setTheme] = useState<Theme>(readTheme)
-  useEffect(() => {
-    const root = document.documentElement
-    if (theme === 'system') root.removeAttribute('data-theme')
-    else root.setAttribute('data-theme', theme)
-    try {
-      localStorage.setItem(THEME_KEY, theme)
-    } catch {
-      // storage unavailable (private mode); theme still applies for this session
-    }
-  }, [theme])
-  const next: Record<Theme, Theme> = { system: 'light', light: 'dark', dark: 'system' }
-  return { theme, cycle: () => setTheme((t) => next[t]) }
-}
-
 export function AppShell({
   page,
   meta,
@@ -78,9 +50,7 @@ export function AppShell({
   children: ReactNode
 }) {
   const [navOpen, setNavOpen] = useState(false)
-  const { theme, cycle } = useTheme()
   useEffect(() => setNavOpen(false), [page])
-  const themeIcon: IconName = theme === 'light' ? 'sun' : theme === 'dark' ? 'moon' : 'monitor'
   const current = NAV.flatMap((g) => g.items).find((i) => i.page === page)
 
   return (
@@ -137,15 +107,6 @@ export function AppShell({
           <div className="topbar-title">{current?.label ?? 'Revenue Review'}</div>
           <div className="topbar-right">
             {meta && <SourceBadge isMock={meta.is_mock} />}
-            <button
-              type="button"
-              className="icon-btn"
-              onClick={cycle}
-              aria-label={`Theme: ${theme}. Click to change.`}
-              title={`Theme: ${theme}`}
-            >
-              <Icon name={themeIcon} />
-            </button>
           </div>
         </header>
         {meta?.is_mock && (
