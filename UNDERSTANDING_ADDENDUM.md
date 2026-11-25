@@ -1,6 +1,6 @@
 # UNDERSTANDING — post-hand-in addendum
 
-> UNDERSTANDING.md was **approved and locked** (commit `8c4bf0b`, see DECISIONS.md D7) and is not edited,
+> UNDERSTANDING.md was **approved and locked** (commit `3a0e557`, see DECISIONS.md D7) and is not edited,
 > as the brief requires. Updates after hand-in are recorded here. All data is **SYNTHETIC**.
 
 ## Status
