@@ -16,7 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from backend import api, db
+from backend import api, db, deliverables
 from backend.analyst import engine, local_engine
 from backend.config import Settings, load_settings
 
@@ -75,11 +75,42 @@ class Handler(BaseHTTPRequestHandler):
             question, mode = self._read_question()
             with db.connect(s.db_path) as conn:
                 return HTTPStatus.OK, engine.ask(conn, s, question, mode)
+        if path == "/api/deliverables/decisions" and method == "GET":
+            return HTTPStatus.OK, deliverables.read_decisions()
+        if path == "/api/deliverables/decisions" and method == "POST":
+            body = self._read_json(deliverables.MAX_BYTES)
+            if not isinstance(body.get("content"), str):
+                raise api.ApiError(HTTPStatus.BAD_REQUEST, "'content' must be a string")
+            try:
+                return HTTPStatus.OK, deliverables.save_decisions(body["content"], body.get("digest"))
+            except deliverables.Conflict as exc:
+                raise api.ApiError(HTTPStatus.CONFLICT, str(exc)) from None
+        if path == "/api/deliverables/report" and method == "GET":
+            with db.connect(s.db_path) as conn:
+                return HTTPStatus.OK, deliverables.report_status(conn)
+        if path == "/api/deliverables/report/generate" and method == "POST":
+            with db.connect(s.db_path) as conn:
+                return HTTPStatus.OK, deliverables.generate_report(conn)
         known = set(api.ENDPOINTS) | {"/api/health", "/api/meta", "/api/analyst/status",
                                       "/api/analyst/suggestions", "/api/analyst/ask"}
         if path in known:
             raise api.ApiError(HTTPStatus.METHOD_NOT_ALLOWED, f"{method} not allowed on {path}")
         raise api.ApiError(HTTPStatus.NOT_FOUND, f"Unknown endpoint {path}")
+
+    def _read_json(self, limit: int) -> dict:
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            raise api.ApiError(HTTPStatus.BAD_REQUEST, "Invalid Content-Length") from None
+        if length <= 0 or length > limit:
+            raise api.ApiError(HTTPStatus.BAD_REQUEST, f"Body must be 1-{limit} bytes of JSON")
+        try:
+            body = json.loads(self.rfile.read(length))
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            raise api.ApiError(HTTPStatus.BAD_REQUEST, "Body is not valid JSON") from None
+        if not isinstance(body, dict):
+            raise api.ApiError(HTTPStatus.BAD_REQUEST, "Body must be a JSON object")
+        return body
 
     def _read_question(self) -> tuple[str, str]:
         try:

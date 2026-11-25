@@ -29,6 +29,13 @@ export const NAV: { group: string; items: { page: string; label: string; icon: I
     ],
   },
   { group: 'Assistant', items: [{ page: 'analyst', label: 'AI Analyst', icon: 'sparkle' }] },
+  {
+    group: 'Deliverables',
+    items: [
+      { page: 'decisions', label: 'Decisions', icon: 'message' },
+      { page: 'report', label: 'Report', icon: 'table' },
+    ],
+  },
 ]
 
 type Theme = 'system' | 'light' | 'dark'
