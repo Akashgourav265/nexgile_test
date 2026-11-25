@@ -39,3 +39,7 @@ Editable in the app (Deliverables → Decisions); saved to this file.
 - **What changed:** UNDERSTANDING.md is locked as of commit `3a0e557`; it will not be edited again.
 - **Now doing:** Plan step G.1 only. `python3 -m analysis.step1_revenue_definitions` independently reproduces the dashboard revenue change from the raw files (SYNTHETIC): -5.99% (shown as -6.0%). Removing 558 duplicate payment rows gives -6.01%; net of refunds, -6.30%. The duplicates do not change the headline.
 - **Not done yet:** steps G.2-G.8 (bridge with ranges, payment failures, onboarding ITT, price DiD, referrals, tickets, app/report update). No initiative verdict has been formed.
+
+## D8 — Request to update UNDERSTANDING.md after hand-in (2026-11-25)
+- **Update:** The user asked to update UNDERSTANDING.md after approving it.
+- **Decision:** The brief says it cannot be changed after hand-in, so post-hand-in updates go to UNDERSTANDING_ADDENDUM.md; the locked file is unchanged. Edit the original only if the user explicitly overrides this.
